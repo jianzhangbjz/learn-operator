@@ -151,9 +151,9 @@ func (r *ReconcileLearn) Reconcile(request reconcile.Request) (reconcile.Result,
 	}
 	podNames := getPodNames(podList.Items)
 
-	// Update status.Nodes if needed
-	if !reflect.DeepEqual(podNames, learn.Status.Nodes) {
-		learn.Status.Nodes = podNames
+	// Update status.PodNames if needed
+	if !reflect.DeepEqual(podNames, learn.Status.PodNames) {
+		learn.Status.PodNames = podNames
 		err := r.client.Status().Update(context.TODO(), learn)
 		if err != nil {
 			reqLogger.Error(err, "Failed to update Learn status")
