@@ -1,0 +1,7 @@
+apiVersion: app.learn.com/v1
+kind: Learn
+metadata:
+  name: example-learn
+spec:
+  # Add fields here
+  size: 2
