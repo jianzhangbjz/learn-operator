@@ -17,7 +17,7 @@ metadata:
       ]
     capabilities: Basic Install
   name: learn-operator.v0.0.1
-  namespace: placeholder
+  namespace: learn
 spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
@@ -25,6 +25,8 @@ spec:
     - kind: Learn
       name: learns.app.learn.com
       version: v1
+      description: An example to show how to make it managed by OLM
+      displayName: Jian's Learn Operator 
   description: Placeholder description
   displayName: Learn Operator
   install:
@@ -128,7 +130,7 @@ spec:
     type: SingleNamespace
   - supported: false
     type: MultiNamespace
-  - supported: true
+  - supported: false
     type: AllNamespaces
   maturity: alpha
   provider: {}
