@@ -1,0 +1,11 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorSource
+metadata:
+ name: learn
+ namespace: openshift-marketplace
+spec:
+ type: appregistry
+ endpoint: https://quay.io/cnr
+ registryNamespace: "jiazha"
+ displayName: "learn-operator"
+ publisher: "Jian Zhang"

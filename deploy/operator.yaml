@@ -16,7 +16,7 @@ spec:
       containers:
         - name: learn-operator
           # Replace this with the built image name
-          image: quay.io/jiazha/learn-operator
+          image: quay.io/jiazha/learn-operator-image
           command:
           - learn-operator
           imagePullPolicy: Always
