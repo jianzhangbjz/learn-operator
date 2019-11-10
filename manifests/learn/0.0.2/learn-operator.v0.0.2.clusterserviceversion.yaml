@@ -16,7 +16,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-  name: learn-operator.v0.0.1
+  name: learn-operator.v0.0.2
   namespace: learn
 spec:
   apiservicedefinitions: {}
@@ -138,4 +138,4 @@ spec:
   maturity: alpha
   provider: {}
   replaces: learn-operator.v0.0.1
-  version: 0.0.1
+  version: 0.0.2
