@@ -60,7 +60,7 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: learn-operator
-                image: quay.io/jiazha/learn-operator-image
+                image: quay.io/jiazha/learn-operator-image:v3
                 imagePullPolicy: Always
                 name: learn-operator
                 resources: {}

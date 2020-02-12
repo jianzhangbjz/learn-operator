@@ -1,0 +1,9 @@
+packageName: learn-operator
+channels:
+- name: release-v1
+  currentCSV: learn-operator.v0.0.1
+- name: release-v2
+  currentCSV: learn-operator.v0.0.2
+- name: release-v3
+  currentCSV: learn-operator.v0.0.3
+defaultChannel: release-v3
