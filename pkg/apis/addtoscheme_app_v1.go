@@ -1,7 +1,7 @@
 package apis
 
 import (
-	v1 "github.com/example-inc/learn-operator/pkg/apis/app/v1"
+	v1 "github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1"
 )
 
 func init() {

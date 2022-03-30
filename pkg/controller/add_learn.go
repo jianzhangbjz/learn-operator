@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/example-inc/learn-operator/pkg/controller/learn"
+	"github.com/jianzhangbjz/learn-operator/pkg/controller/learn"
 )
 
 func init() {

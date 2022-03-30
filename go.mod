@@ -1,4 +1,4 @@
-module github.com/example-inc/learn-operator
+module github.com/jianzhangbjz/learn-operator
 
 go 1.13
 
