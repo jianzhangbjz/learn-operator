@@ -11,9 +11,9 @@ import (
 
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
-		"github.com/example-inc/learn-operator/pkg/apis/app/v1.Learn":       schema_pkg_apis_app_v1_Learn(ref),
-		"github.com/example-inc/learn-operator/pkg/apis/app/v1.LearnSpec":   schema_pkg_apis_app_v1_LearnSpec(ref),
-		"github.com/example-inc/learn-operator/pkg/apis/app/v1.LearnStatus": schema_pkg_apis_app_v1_LearnStatus(ref),
+		"github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1.Learn":       schema_pkg_apis_app_v1_Learn(ref),
+		"github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1.LearnSpec":   schema_pkg_apis_app_v1_LearnSpec(ref),
+		"github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1.LearnStatus": schema_pkg_apis_app_v1_LearnStatus(ref),
 	}
 }
 
@@ -45,19 +45,19 @@ func schema_pkg_apis_app_v1_Learn(ref common.ReferenceCallback) common.OpenAPIDe
 					},
 					"spec": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/example-inc/learn-operator/pkg/apis/app/v1.LearnSpec"),
+							Ref: ref("github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1.LearnSpec"),
 						},
 					},
 					"status": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/example-inc/learn-operator/pkg/apis/app/v1.LearnStatus"),
+							Ref: ref("github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1.LearnStatus"),
 						},
 					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"github.com/example-inc/learn-operator/pkg/apis/app/v1.LearnSpec", "github.com/example-inc/learn-operator/pkg/apis/app/v1.LearnStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+			"github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1.LearnSpec", "github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1.LearnStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
 	}
 }
 

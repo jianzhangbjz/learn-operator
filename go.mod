@@ -1,11 +1,10 @@
-module github.com/example-inc/learn-operator
+module learn-operator
 
 go 1.17
 
 require (
-	github.com/blang/semver v3.5.1+incompatible
 	github.com/go-openapi/spec v0.19.0
-	github.com/operator-framework/operator-sdk v0.12.0
+	github.com/operator-framework/operator-sdk v1.18.1
 	github.com/spf13/pflag v1.0.3
 	k8s.io/api v0.0.0
 	k8s.io/apimachinery v0.0.0
@@ -94,3 +93,4 @@ replace (
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20190918202012-3c1ca76f5bda
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.0.0-20190918201353-5cc279503896
 )
+
