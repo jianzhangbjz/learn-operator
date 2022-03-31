@@ -241,3 +241,105 @@ example-learn-85fc47cf75-jv9mg   1/1     Running   0          34m
 learn-operator-9cd7b7d5c-ffxs9   1/1     Running   0          40m
 ```
 
+## Build the multi-arch image
+Based on the https://github.com/docker/buildx#building-multi-platform-images description, I build the multi-arch image on `MacOS`.
+1. The base image should support multi-arch. You can check it by using the `docker buildx imagetools inspect xxx` command. For example, the current `Dockerfile` as follows,
+```yaml
+FROM golang:1.17 as build
+COPY . /app/
+WORKDIR /app
+RUN go build -mod=vendor -o "/app/build/bin/learn-operator" "/app/cmd/manager/main.go"
+
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+COPY --from=build  /app/build/bin /usr/local/bin/
+ENTRYPOINT ["/usr/local/bin/learn-operator"]
+```
+Let's check the base image: `registry.access.redhat.com/ubi8/ubi-minimal:latest`, as follows, it supports the `linux/amd64, linux/arm64, linux/ppc64le, linux/s390x` four platforms.
+```yaml
+mac:learn-operator jianzhang$ docker buildx imagetools inspect registry.access.redhat.com/ubi8/ubi-minimal:latest
+Name:      registry.access.redhat.com/ubi8/ubi-minimal:latest
+MediaType: application/vnd.docker.distribution.manifest.list.v2+json
+Digest:    sha256:574f201d7ed185a9932c91cef5d397f5298dff9df08bc2ebb266c6d1e6284cd1
+           
+Manifests: 
+  Name:      registry.access.redhat.com/ubi8/ubi-minimal:latest@sha256:c1cd272f2ffd1d4ae660bdd31d08f2072e9a6a0805d4d31730dc475e55296948
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/amd64
+             
+  Name:      registry.access.redhat.com/ubi8/ubi-minimal:latest@sha256:9bf78e321fd7fe46075971a83c6f92e48cbc35b546bf9af72b865fc45673d562
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/arm64
+             
+  Name:      registry.access.redhat.com/ubi8/ubi-minimal:latest@sha256:aeba4dfe9297d322afe7f633e6b3ebe0c80dc282e60d5755765d3a26b4d7d05b
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/ppc64le
+             
+  Name:      registry.access.redhat.com/ubi8/ubi-minimal:latest@sha256:1049e0a6e05d8e839060f51e3b838439f7e38d0a3497b2504da8107603c8ba92
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/s390x
+```
+2. Create a `Builder` instance that its driver should be `docker-container` or `kubernetes`, as follows,
+```yaml
+mac:learn-operator jianzhang$ docker buildx create --use --name jian
+jian
+mac:learn-operator jianzhang$ docker buildx ls
+NAME/NODE       DRIVER/ENDPOINT             STATUS   PLATFORMS
+elegant_wu      docker-container                     
+  elegant_wu0   unix:///var/run/docker.sock stopped  
+jian *          docker-container                     
+  jian0         unix:///var/run/docker.sock inactive 
+desktop-linux   docker                               
+  desktop-linux desktop-linux               running  linux/amd64, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/arm/v7, linux/arm/v6
+default         docker                               
+  default       default                     running  linux/amd64, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/arm/v7, linux/arm/v6
+```
+3. Start to build the multi-arch image based on the current `Dockerfile`. Note that the `--platform` args should match the base image's supported platforms.
+```yaml
+mac:learn-operator jianzhang$ docker buildx build --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x -t quay.io/olmqe/learn-operator:v2 --push .
+[+] Building 1034.8s (11/35)                                                                                                                   
+[+] Building 1035.0s (11/35)                                                                                                                   
+[+] Building 2175.2s (29/35)                                                                                                                   
+[+] Building 3497.0s (29/35)                                                                                                                   
+[+] Building 3562.8s (29/35)                                                                                                                   
+[+] Building 4890.8s (37/37) FINISHED                                                                                                          
+ => [internal] load build definition from Dockerfile                                                                                      0.0s
+ => => transferring dockerfile: 330B                                                                                                      0.0s
+ => [internal] load .dockerignore                                                                                                         0.0s
+ => => transferring context: 2B                                                                                                           0.0s
+ => [linux/s390x internal] load metadata for registry.access.redhat.com/ubi8/ubi-minimal:latest                                           9.8s
+ => [linux/s390x internal] load metadata for docker.io/library/golang:1.17                                                                4.5s
+ => [linux/arm64 internal] load metadata for registry.access.redhat.com/ubi8/ubi-minimal:latest                                           6.7s
+ => [linux/arm64 internal] load metadata for docker.io/library/golang:1.17                                                                7.1s
+ => [linux/amd64 internal] load metadata for registry.access.redhat.com/ubi8/ubi-minimal:latest                                           5.0s
+ => [linux/amd64 internal] load metadata for docker.io/library/golang:1.17                                                                7.2s
+ => [linux/ppc64le internal] load metadata for registry.access.redhat.com/ubi8/ubi-minimal:latest                                         9.6s
+ => [linux/ppc64le internal] load metadata for docker.io/library/golang:1.17                                                              8.2s
+ ...
+ => => pushing layers                                                                                                                   139.5s
+ => => pushing manifest for quay.io/olmqe/learn-operator:v2@sha256:f6a1edff25fe0d666b50dd8128122e20e8248808859c895f48c7ec5ef6c3e3a5       6.3s
+ => [auth] olmqe/learn-operator:pull,push token for quay.io   
+```
+Done, check if it support the multi-arch now,
+```yaml
+mac:learn-operator jianzhang$ docker buildx imagetools inspect quay.io/olmqe/learn-operator:v2
+Name:      quay.io/olmqe/learn-operator:v2
+MediaType: application/vnd.docker.distribution.manifest.list.v2+json
+Digest:    sha256:f6a1edff25fe0d666b50dd8128122e20e8248808859c895f48c7ec5ef6c3e3a5
+           
+Manifests: 
+  Name:      quay.io/olmqe/learn-operator:v2@sha256:befdb773305baaca896355ccdd72c84f009a3fc19e23fb1879339545ad6e8594
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/amd64
+             
+  Name:      quay.io/olmqe/learn-operator:v2@sha256:4fe99a30425af03732720199f9b4b2ad444dadc316277f6da08907bb7216a75f
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/arm64
+             
+  Name:      quay.io/olmqe/learn-operator:v2@sha256:66c107a6099e2e7ccac76d205f73626c6ccb843240699058e6b2c274b235044f
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/ppc64le
+             
+  Name:      quay.io/olmqe/learn-operator:v2@sha256:3a203afab2de2506e591743875de0d0857b01224e51ad65c5a903d1338f6b04a
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/s390x
+  ```
