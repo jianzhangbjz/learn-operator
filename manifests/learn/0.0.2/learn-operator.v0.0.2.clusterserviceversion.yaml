@@ -61,7 +61,7 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: learn-operator
-                image: quay.io/jiazha/learn-operator-image
+                image: quay.io/olmqe/learn-operator:v2
                 imagePullPolicy: Always
                 name: learn-operator
                 resources: {}
@@ -131,9 +131,9 @@ spec:
     type: OwnNamespace
   - supported: true
     type: SingleNamespace
-  - supported: false
+  - supported: true
     type: MultiNamespace
-  - supported: false
+  - supported: true
     type: AllNamespaces
   maturity: alpha
   provider: {}

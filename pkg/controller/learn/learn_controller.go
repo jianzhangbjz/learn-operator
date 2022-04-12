@@ -2,8 +2,9 @@ package learn
 
 import (
 	"context"
-	appv1 "github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1"
 	"reflect"
+
+	appv1 "github.com/jianzhangbjz/learn-operator/pkg/apis/app/v1"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -184,7 +185,7 @@ func (r *ReconcileLearn) deploymentForLearn(m *appv1.Learn) *appsv1.Deployment {
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
-						Image:   "busybox",
+						Image:   "quay.io/openshifttest/busybox:multiarch",
 						Name:    "learn",
 						Command: []string{"sleep", "3600"},
 						Ports: []corev1.ContainerPort{{
