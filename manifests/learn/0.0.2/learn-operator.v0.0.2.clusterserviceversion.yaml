@@ -61,7 +61,7 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: learn-operator
-                image: quay.io/olmqe/learn-operator:v2
+                image: quay.io/olmqe/learn-operator@sha256:0f04654a7421ea5694a20958dc99c6685299f325a595911258a8daf2b301a686
                 imagePullPolicy: Always
                 name: learn-operator
                 resources: {}

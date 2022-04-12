@@ -185,7 +185,8 @@ func (r *ReconcileLearn) deploymentForLearn(m *appv1.Learn) *appsv1.Deployment {
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
-						Image:   "quay.io/openshifttest/busybox:multiarch",
+						// "quay.io/openshifttest/busybox:multiarch"
+						Image:   "quay.io/openshifttest/busybox@sha256:c5439d7db88ab5423999530349d327b04279ad3161d7596d2126dfb5b02bfd1f",
 						Name:    "learn",
 						Command: []string{"sleep", "3600"},
 						Ports: []corev1.ContainerPort{{
