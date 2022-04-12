@@ -27,7 +27,7 @@ spec:
       version: v1
       description: An example to show how to make it managed by OLM
       displayName: Jian's Learn Operator 
-  description: Placeholder description
+  description: An operator for testing.
   displayName: Learn Operator
   install:
     spec:
@@ -133,5 +133,7 @@ spec:
   - supported: true
     type: AllNamespaces
   maturity: alpha
-  provider: {}
+  provider:
+    name: OLM QE
+    url: https://github.com/jianzhangbjz/learn-operator
   version: 0.0.1

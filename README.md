@@ -242,6 +242,7 @@ learn-operator-9cd7b7d5c-ffxs9   1/1     Running   0          40m
 ```
 
 ## Build the multi-arch image
+### Build the operator image
 Based on the https://github.com/docker/buildx#building-multi-platform-images description, I build the multi-arch image on `MacOS`.
 1. The base image should support multi-arch. You can check it by using the `docker buildx imagetools inspect xxx` command. For example, the current `Dockerfile` as follows,
 ```yaml
@@ -343,3 +344,70 @@ Manifests:
   MediaType: application/vnd.docker.distribution.manifest.v2+json
   Platform:  linux/s390x
   ```
+
+  ### Build the operator bundle image
+  1. Generate the `bundle.Dockerfile` via `opm`, as follows,
+  ```yaml
+  mac:learn-operator jianzhang$ opm alpha bundle build -c alpha -e alpha -d ./manifests/learn/0.0.1/ -p learn -t quay.io/olmqe/learn-operator-bundle:v0.0.1 --overwrite
+  ...
+  ```
+  2. Create the **multi-arch** image based on this generated `bundle.Dockerfile`.
+  ```yaml
+  mac:learn-operator jianzhang$ docker buildx build -f bundle.Dockerfile --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x -t quay.io/olmqe/learn-operator-bundle:v0.0.1 --push --no-cache .
+  [+] Building 18.0s (8/13)     
+  ...
+  ...
+   => => pushing manifest for quay.io/olmqe/learn-operator-bundle:v0.0.1@sha256:796b10c65b93b35e1bd1f972eeac131e2c298df83973aeacfba9c54746  6.3s
+   => [auth] olmqe/learn-operator-bundle:pull,push token for quay.io 
+  ```
+  If you need to create multi bundle images, you can repeat above steps 1, 2. For example, create `v0.0.2` version.
+  ```yaml
+  mac:learn-operator jianzhang$ opm alpha bundle build -c alpha -e alpha -d ./manifests/learn/0.0.2/ -p learn -t quay.io/olmqe/learn-operator-bundle:v0.0.2 --overwrite
+  INFO[0000] Building annotations.yaml  
+  ...
+  ```
+  ```yaml
+  mac:learn-operator jianzhang$ docker buildx build -f bundle.Dockerfile --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x -t quay.io/olmqe/learn-operator-bundle:v0.0.2 --push --no-cache .
+  [+] Building 12.8s (7/12)  
+  ...
+  ```
+  create `v0.0.3` version
+  ```yaml
+  mac:learn-operator jianzhang$ opm alpha bundle build -c beta -e beta -d ./manifests/learn/0.0.3/ -p learn -t quay.io/olmqe/learn-operator-bundle:v0.0.3 --overwrite
+  INFO[0000] Building annotations.yaml                    
+  ...                    
+  ```
+  ```yaml
+  mac:learn-operator jianzhang$ docker buildx build -f bundle.Dockerfile --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x -t quay.io/olmqe/learn-operator-bundle:v0.0.3 --push --no-cache .
+  [+] Building 13.2s (7/12)                                                                                                                      
+  => [internal] load build definition from bundle.Dockerfile   
+  ...
+  ``` 
+  ### Build the operator index image
+  1. Generate the `index.Dockerfile` only.
+  ```yaml
+  mac:learn-operator jianzhang$ opm index add -b quay.io/olmqe/learn-operator-bundle:v0.0.1 -t quay.io/olmqe/learn-operator-index:v1 --generate   
+  WARN[0000] DEPRECATION NOTICE:
+  ...
+  ```
+  2. Create a multi-arch image based on this `index.Dockerfile`.
+  ```yaml
+  mac:learn-operator jianzhang$ docker buildx build -f index.Dockerfile --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x -t quay.io/olmqe/learn-operator-index:v1 --push --no-cache .
+  ...
+  ```
+  If you want to add more bundles into an index image, just do:
+  ```yaml
+  mac:learn-operator jianzhang$ opm index add -b quay.io/olmqe/learn-operator-bundle:v0.0.2,quay.io/olmqe/learn-operator-bundle:v0.0.3 -f quay.io/olmqe/learn-operator-index:v1 -t quay.io/olmqe/learn-operator-index:v1 --generate 
+  ...
+  INFO[0364] writing dockerfile: index.Dockerfile          bundles="[quay.io/olmqe/learn-operator-bundle:v0.0.2]"
+  ```
+  ```yaml
+  mac:learn-operator jianzhang$ docker buildx build -f index.Dockerfile --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x -t quay.io/olmqe/learn-operator-index:v1 --push --no-cache .
+  ...
+   => => pushing manifest for quay.io/olmqe/learn-operator-index:v1@sha256:bd7c7fae846c3efbd02c0e91c51f316029a08dadd6f72a1397ba98f1ba97f01  7.9s
+   => [auth] olmqe/learn-operator-index:pull,push token for quay.io 
+  ```
+
+
+
+

@@ -16,7 +16,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-  name: learn-operator.v0.0.2
+  name: learn-operator.v0.0.3
   namespace: learn
 spec:
   apiservicedefinitions: {}
@@ -139,5 +139,5 @@ spec:
   provider:
     name: OLM QE
     url: https://github.com/jianzhangbjz/learn-operator
-  replaces: learn-operator.v0.0.1
-  version: 0.0.2
+  replaces: learn-operator.v0.0.2
+  version: 0.0.3
