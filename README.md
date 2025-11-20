@@ -242,6 +242,16 @@ learn-operator-9cd7b7d5c-ffxs9   1/1     Running   0          40m
 ```
 
 ## Build the multi-arch image
+
+### Migrate the Sqlite based image to the File based
+```bash
+mkdir catalog
+opm migrate quay.io/olmqe/learn-operator-index:v1 catalog/
+opm generate dockerfile catalog -b registry.redhat.io/openshift4/ose-operator-registry-rhel9:v4.19 -i registry.redhat.io/openshift4/ose-operator-registry-rhel9:v4.19
+podman build --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x  --manifest quay.io/olmqe/learn-operator-index:v25 . -f catalog.Dockerfile 
+podman manifest push quay.io/olmqe/learn-operator-index:v25
+```
+
 ### Build the operator image
 Based on the https://github.com/docker/buildx#building-multi-platform-images description, I build the multi-arch image on `MacOS`.
 1. The base image should support multi-arch. You can check it by using the `docker buildx imagetools inspect xxx` command. For example, the current `Dockerfile` as follows,
